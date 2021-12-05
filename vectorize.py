@@ -16,7 +16,7 @@ import pickle
 
 stop_word_list = [
     "s","t","'s","n't",'m',"'m","'ve","'re","'ll",'re',"'d","ve",
-    '(',')','[',']',':',',','.','’','“','”','``',"''",'&',';','?','-',"'",'!','↩︎','—','...','--','*',
+    '(',')','[',']',':',',','.','’','“','”','``',"''",'&',';','?','-',"'",'!','↩︎','—','...','--','*','‘','–',
     'a','about','all','also','an','am','and','are','as','at','be','been','but','by','can','could','did','do','doing','for','from','had','has','have','he','her','him','his','how',
     'i','if','in','into','is','it','its','like','may','me','might','more','my','not','some','no','of','on','one','or','other','our','out',
     'said','she','should','so','such','than','that','the','their','them','then','there','these','they','this','to','up','us',
@@ -65,7 +65,7 @@ def main():
     print(X_reduced.shape)
 
     print('pickling...')
-    p = (X_reduced, titles, word_counts)
+    p = (X_reduced, feature_names_reduced, titles, word_counts)
     with open('xreduced.pickle', 'wb') as f:
         pickle.dump(p, f)
 

@@ -59,7 +59,7 @@ def visit_node(output, agglom, n, titles, counts, node_index, depth, rect):
 def main():
     print('unpickling...')
     with open('xreduced.pickle','rb') as f:
-        X_reduced, titles, word_counts = pickle.load(f)
+        X_reduced, feature_names_reduced, titles, word_counts = pickle.load(f)
 
     n = X_reduced.shape[0]
 
