@@ -93,9 +93,9 @@ window.onload = load;
 </script>
 </head>
 <body>
+<svg width="600" height="600" id="svg" style="position:absolute; left:1000px; top:0px"></svg>
 <div>
 	<span id="title">&nbsp;</span>
 </div>
-<svg width="600" height="600" id="svg"></svg>
 </body>
 </html>
