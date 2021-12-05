@@ -5,9 +5,11 @@ from sklearn.decomposition import LatentDirichletAllocation, PCA, NMF, Truncated
 from sklearn.preprocessing import scale, normalize
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from bs4 import BeautifulSoup
+from nltk.tokenize import word_tokenize
 import numpy as np
 import json
 import os
+import re
 import sys
 
 if len(sys.argv) >= 3:
@@ -19,23 +21,49 @@ else:
     method2 = 'tsne_graph'
     n_topics = 20
 
+stop_word_list = [
+    "s","t","'s","n't",'m',"'m","'ve","'re","'ll",'re',"'d","ve",
+    '(',')','[',']',':',',','.','’','“','”','``',"''",'&',';','?','-',"'",'!','↩︎','—','...','--','*',
+    'a','about','all','also','an','am','and','are','as','at','be','been','but','by','can','could','did','do','doing','for','from','had','has','have','he','her','him','his','how',
+    'i','if','in','into','is','it','its','like','may','me','might','more','my','not','some','no','of','on','one','or','other','our','out',
+    'said','she','should','so','such','than','that','the','their','them','then','there','these','they','this','to','up','us',
+    'very','was','we','were','what','when','where','which','who','will','with','would','you','your',
+
+    'because','even','get','just','know','make','many','most','much','people','really','something','think','thing','things','time','want','way',
+]
+
 def main():
     print('loading and cleaning html...')
-    docs = []
-    titles = []
+    all_docs = []
+    all_titles = []
     for path in sorted(os.listdir(path='data')):
         with open(f'data/{path}') as f:
             obj = json.load(f)
-            if len(obj['body']) > 1000:
-                docs.append(BeautifulSoup(obj['body'], features='html.parser').get_text())
-                titles.append(obj['title'])
-    print(len(docs))
+            all_docs.append(BeautifulSoup(obj['body'], features='html.parser').get_text())
+            all_titles.append(obj['title'])
+    print(f'Total document count (including ones we\'ll reject: {len(all_docs)}')
+    print('tokenizing...')
+    word_counts = []
+    titles = []
+    docs = []
+    re_word = re.compile('[-a-zA-Z]+')
+    for i in range(len(all_docs)):
+        tokens = word_tokenize(all_docs[i])
+        if len(tokens) >= 100:
+            word_counts.append(len(tokens))
+            #docs.append(' '.join(filter(lambda t:re_word.match(t), tokens)))
+            docs.append(' '.join(tokens))
+            titles.append(all_titles[i])
+
+    all_docs = None
+    n = len(docs)
+    print(n)
     print('vectorizing...')
     if method in ['lda']:
-        vectorizer = CountVectorizer(stop_words='english')
+        vectorizer = CountVectorizer(stop_words=stop_word_list, tokenizer=lambda x:x.split())
         reducer = VarianceThreshold(threshold = 0.1)
     elif method in ['nmf','nmf-kl']:
-        vectorizer = TfidfVectorizer(stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words=stop_word_list, tokenizer=lambda x:x.split())
         reducer = VarianceThreshold(threshold = 0.0001)
     else:
         raise Exception(f'Unknown method: {method}')
