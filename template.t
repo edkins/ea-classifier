@@ -26,7 +26,7 @@ function mouseover(event) {
 	for (let j = 0; j < data.topicality[i].length; j++) {
 		let topicality = data.topicality[i][j];
 		let topic_name = data.topics[j].map(x=>x[0]).join(' ');
-		let color = colormap[j];
+		let color = colormap[j % colormap.length];
 		title += `<span style="color: ${color}">${topicality.toFixed(3)}</span>:`;
 		if (j === am) {
 			title += `<b>${topic_name}</b><br>`;
@@ -66,11 +66,11 @@ function load() {
 		} else {
 			const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 			const am = argmax(data.topicality[i]);
-			circle.setAttribute('cx', hw + 5 * data.x[i]);
-			circle.setAttribute('cy', hh + 5 * data.y[i]);
+			circle.setAttribute('cx', hw + 50 * data.x[i]);
+			circle.setAttribute('cy', hh + 50 * data.y[i]);
 			circle.setAttribute('r', 5);
 			circle.setAttribute('opacity', data.topicality[i][am]);
-			circle.setAttribute('fill', colormap[am]);
+			circle.setAttribute('fill', colormap[am % colormap.length]);
 			circle.dataset['i'] = i;
 			circle.onmouseover = mouseover;
 			svg.appendChild(circle);
@@ -85,6 +85,6 @@ window.onload = load;
 <div>
 	<span id="title">&nbsp;</span>
 </div>
-<svg width="1000" height="1000" id="svg"></svg>
+<svg width="600" height="600" id="svg"></svg>
 </body>
 </html>
