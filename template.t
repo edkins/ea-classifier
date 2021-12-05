@@ -17,6 +17,17 @@ const colormap = [
 	'#7f7f7f',  // grey
 	'#bcbd22',  // olive
 	'#17becf',  // cyan
+
+	'#202080',  // indigo
+	'#ffd000',  // gold
+	'#006000',  // dark green
+	'#c05020',  // brick red
+	'#ff00a0',  // raspberry
+	'#503000',  // red-brown
+	'#ff00ff',  // magenta
+	'#8080c0',  // blue-grey
+	'#c0c090',  // beige
+	'#00c090',  // turquoise
 ];
 
 function mouseover(event) {
@@ -66,10 +77,10 @@ function load() {
 		} else {
 			const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
 			const am = argmax(data.topicality[i]);
-			circle.setAttribute('cx', hw + 50 * data.x[i]);
-			circle.setAttribute('cy', hh + 50 * data.y[i]);
-			circle.setAttribute('r', 5);
-			circle.setAttribute('opacity', data.topicality[i][am]);
+			circle.setAttribute('cx', hw + 100 * data.x[i]);
+			circle.setAttribute('cy', hh + 100 * data.y[i]);
+			circle.setAttribute('r', 3);
+			circle.setAttribute('opacity', Math.sqrt(data.topicality[i][am]));
 			circle.setAttribute('fill', colormap[am % colormap.length]);
 			circle.dataset['i'] = i;
 			circle.onmouseover = mouseover;

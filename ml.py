@@ -15,7 +15,8 @@ if len(sys.argv) >= 3:
     method2 = sys.argv[2]
     n_topics = int(sys.argv[3])
 else:
-    method = 'lda'
+    method = 'nmf-kl'
+    method2 = 'tsne_graph'
     n_topics = 20
 
 def main():
@@ -63,6 +64,10 @@ def main():
     if method2 == 'tsne':
         print('tsne...')
         xy = TSNE(n_components=2, init='random', verbose=2, perplexity=30).fit_transform(X_lda)
+    elif method2 == 'tsne_graph':
+        print('tsne...')
+        graph = X_lda / np.reshape(np.sum(X_lda, axis=1), (X_lda.shape[0], 1))
+        xy = TSNE(n_components=2, init='random', verbose=2, perplexity=30).fit_transform(graph)
     elif method2 == 'pca':
         print('pca...')
         xy = PCA(n_components=2).fit_transform(X_lda)
@@ -76,6 +81,11 @@ def main():
         print('dumb circle embedding...')
         circle = np.array([[np.cos(t * 6.283 / n_topics), np.sin(t * 6.283 / n_topics)] for t in range(n_topics)])
         xy = np.matmul(X_lda, circle)
+    elif method2 == 'circle_graph':
+        print('dumb circle graph embedding...')
+        graph = X_lda / np.reshape(np.sum(X_lda, axis=1), (X_lda.shape[0], 1))
+        circle = np.array([[np.cos(t * 6.283 / n_topics), np.sin(t * 6.283 / n_topics)] for t in range(n_topics)])
+        xy = np.matmul(graph, circle)
     elif method2 == 'topic':
         print('placing topics...')
         topic_xy = PCA(n_components=2).fit_transform(lda.components_)
