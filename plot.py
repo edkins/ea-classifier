@@ -7,8 +7,8 @@ def main():
         obj = json.load(f)
     x = obj['x']
     y = obj['y']
-    c = np.log(obj['word_counts'])
-    plt.scatter(x=x, y=y, c=c)
+    c = np.argmax(obj['topicality'], axis=1)
+    plt.scatter(x=x, y=y, c=c, cmap='tab10')
     plt.show()
 
 if __name__ == '__main__':

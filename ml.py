@@ -56,6 +56,7 @@ def main():
         f.write(json.dumps({
             'x': [float(x) for x in xy[:,0]],
             'y': [float(y) for y in xy[:,1]],
+            'topicality': [[float(t) for t in top] for top in X_lda],
             'titles': titles,
             'word_counts': [int(c) for c in word_counts],
             'keywords': [str(n) for n in feature_names_reduced],

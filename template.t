@@ -6,9 +6,47 @@
 
 const data = {{data}};
 
+const colormap = [
+	'#1f77b4',  // blue
+	'#ff7f0e',  // orange
+	'#2ca02c',  // green
+	'#d62728',  // red
+	'#9467bd',  // purple
+	'#8c564b',  // brown
+	'#e377c2',  // pink
+	'#7f7f7f',  // grey
+	'#bcbd22',  // olive
+	'#17becf',  // cyan
+];
+
 function mouseover(event) {
-	const title = event.target.dataset['title'];
-	document.getElementById('title').textContent = title;
+	const i = parseInt(event.target.dataset['i']);
+	let title = `<b>${data.titles[i]}</b><br>`;
+	const am = argmax(data.topicality[i]);
+	for (let j = 0; j < data.topicality[i].length; j++) {
+		let topicality = data.topicality[i][j];
+		let topic_name = data.topics[j].map(x=>x[0]).join(' ');
+		let color = colormap[j];
+		title += `<span style="color: ${color}">${topicality.toFixed(3)}</span>:`;
+		if (j === am) {
+			title += `<b>${topic_name}</b><br>`;
+		} else {
+			title += `${topic_name}<br>`;
+		}
+	}
+	document.getElementById('title').innerHTML = title;
+}
+
+function argmax(a) {
+	let result = 0;
+	let max = a[0];
+	for (let i = 1; i < a.length; i++) {
+		if (a[i] > max) {
+			result = i;
+			max = a[i];
+		}
+	}
+	return result;
 }
 
 function load() {
@@ -27,11 +65,13 @@ function load() {
 			svg.appendChild(t);
 		} else {
 			const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			const am = argmax(data.topicality[i]);
 			circle.setAttribute('cx', hw + 5 * data.x[i]);
 			circle.setAttribute('cy', hh + 5 * data.y[i]);
 			circle.setAttribute('r', 5);
-			circle.setAttribute('opacity', 0.1);
-			circle.dataset['title'] = data.titles[i];
+			circle.setAttribute('opacity', data.topicality[i][am]);
+			circle.setAttribute('fill', colormap[am]);
+			circle.dataset['i'] = i;
 			circle.onmouseover = mouseover;
 			svg.appendChild(circle);
 		}
