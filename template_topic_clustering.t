@@ -34,10 +34,17 @@ function mouseover(event) {
 	const i = parseInt(event.target.dataset.i);
 	event.target.setAttribute('fill','#f00');
 	show_info(i);
-}
 
-function mouseout(event) {
-	event.target.setAttribute('fill','#000');
+	for (let j = 0; j < data.topics.length; j++) {
+		const elem = document.getElementById(`text${j}`);
+		let color = undefined;
+		if (j === i) {
+			color = '#f00';
+		} else {
+			color = `rgb(0,${1000 * data.relatedness[i][j]},0)`;
+		}
+		elem.setAttribute('fill', color);
+	}
 }
 
 function show_info(i) {
@@ -72,14 +79,14 @@ function show_cluster_diagram() {
 	svg.innerHTML = '';
 	for (let i = 0; i < data.x.length; i++) {
 		const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-		text.setAttribute('x', hw + 300 * data.x[i]);
-		text.setAttribute('y', hh + 300 * data.y[i]);
+		text.id = `text${i}`;
+		text.setAttribute('x', hw + 250 * data.x[i]);
+		text.setAttribute('y', hh + 250 * data.y[i]);
 		text.setAttribute('fill', '#000');
 		text.setAttribute('font-size', 10);
 		text.textContent = data.topics[i][0][0];
 		text.dataset.i = i;
 		text.onmouseover = mouseover;
-		text.onmouseout = mouseout;
 		svg.appendChild(text);
 	}
 }

@@ -37,17 +37,12 @@ def main():
         topic.sort(key=lambda wv: wv[1], reverse=True)
         topics.append(topic[:30])
 
-    print('calc spillover')
-    spillover = np.matmul(np.transpose(X_nmf), X_nmf)
-    #spillover = spillover * spillover / np.reshape(np.diag(spillover), (1,n_topics)) / np.reshape(np.diag(spillover), (n_topics,1))
-    distance_matrix = 1 / np.maximum(spillover, 0.000001)
-    print(spillover.shape)
+    print('calc relatedness')
+    relatedness = np.matmul(np.transpose(X_nmf), X_nmf)
+    print(relatedness.shape)
     
     print('tsne on topics...')
-    #xy = scale(TSNE(2, metric='precomputed').fit_transform(distance_matrix)) * 0.5
-    #xy = scale(TSNE(2).fit_transform(np.log(nmf.components_ + 0.00001))) * 0.5
-    #xy = scale(TSNE(2,perplexity=perplexity).fit_transform(np.sqrt(np.transpose(X_nmf)))) * 0.5
-    xy = scale(TSNE(2,perplexity=perplexity).fit_transform(np.power(np.transpose(X_nmf),0.2))) * 0.5
+    xy = scale(TSNE(2,perplexity=perplexity).fit_transform(np.power(np.transpose(X_nmf),0.3))) * 0.5
 
     with open('output.json','w') as f:
         f.write(json.dumps({
@@ -56,6 +51,7 @@ def main():
             'topics': topics,
             'titles': titles,
             'topicality': [[float(t) for t in top] for top in X_nmf],
+            'relatedness': [[float(r) for r in rel] for rel in relatedness],
         }, indent=4))
 
 
